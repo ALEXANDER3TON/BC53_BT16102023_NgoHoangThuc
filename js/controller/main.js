@@ -6,23 +6,32 @@ const takeInfo = () => {
   const element = document.querySelectorAll(
     "#personForm input, #personForm select"
   );
-
-  let doiTuong = {};
+  console.log(element);
+  let doiTuong ={} ;
   element.forEach((ele, index) => {
-    // console.log(ele.value, ele.name)
     const { value, name } = ele;
+        doiTuong[name] = value;
 
-    doiTuong[name] = value;
-
-    console.log(doiTuong[name])
+ 
   });
-
+  console.log(doiTuong);
+  
   if (doiTuong.type === "hs") {
+    // nhu vay ne okay
     const { type, ten, address, email, id, toan, ly, hoa } = doiTuong;
     return new Student(type, ten, address, email, id, toan, ly, hoa);
-  } else if (doiTuong.type === "nv") {
+  } else if (type === "nv") {
     const { type, ten, address, email, id, workDays, salaryDay } = doiTuong;
-    return new Employee(type, ten, address, email, id, workDays, salaryDay);
+    return new Employee(
+      type,
+      ten,
+      address,
+      email,
+      id,
+      workDays,
+      salaryDay
+    );
+    a
   } else {
     const { type, ten, address, email, id, companyName, price, feedback } =
       doiTuong;
@@ -36,10 +45,19 @@ const takeInfo = () => {
       price,
       feedback
     );
-  }
-};
+  };
 
-window.addPerson = () => {
-  const i = takeInfo();
-  console.log(i)
+
+};
+// const getInfor = () => {
+//   let ten = document.getElementById("ten").value;
+//   let diemToan = document.getElementById("toan").value;
+//   console.log('diemToan: ', diemToan);
+//   // let ten = document.getElementById("ten").value;
+
+//   console.log("ten: ", ten);
+//   // ctrlS
+// };
+window.add = () => {
+  console.log(takeInfo())
 };
