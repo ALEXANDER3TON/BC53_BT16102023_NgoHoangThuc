@@ -6,16 +6,6 @@ class Person {
     this.email = email;
     this.id = id;
   }
-
-  mapType() {
-    if(this.type === 'hs'){
-      return "Học sinh";
-    } else if(this.type === 'nv') {
-      return "Nhân viên"
-    } else {
-      return "Khách Hàng";
-    }
-  }
 }
 
 class Student extends Person {
@@ -55,16 +45,14 @@ class Customer extends Person {
 class ListPerson {
   constructor() {
     this.list = [];
-  }
+  };
 
   add(person) {
     this.list.push(person);
-  }
-
-  get(index) {
-    return this.list[index];
-  }
+  };
   getAll() {
     return this.list;
-  }
-}
+  };
+  
+
+};

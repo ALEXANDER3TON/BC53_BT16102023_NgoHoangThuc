@@ -66,9 +66,9 @@
                   <label for="">Đối tượng</label>
                   <select class="form-control" name="type" id="type">
                     <option value="">Chọn đối tượng</option>
-                    <option value="hs">Học sinh</option>
-                    <option value="nv">Nhân viên</option>
-                    <option value="kh">Khách hàng</option>
+                    <option value="Học sinh">Học sinh</option>
+                    <option value="Nhân viên">Nhân viên</option>
+                    <option value="Khách hàng">Khách hàng</option>
                   </select>
                 </div>
                 <div class="form-group">
@@ -181,8 +181,12 @@
               class="btn btn-primary"
               id="add"
               onclick="add()"
+              data-bs-dismiss="modal"
             >
               Thêm
+            </button>
+            <button class="btn btn-success" type="button" onclick="updatePerson()" data-bs-dismiss="modal">
+              Cập Nhật
             </button>
           </div>
         </div>
