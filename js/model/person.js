@@ -1,10 +1,20 @@
 class Person {
-  constructor() {
+  constructor(type, ten, address, email, id) {
     this.type = type;
     this.ten = ten;
     this.address = address;
     this.email = email;
     this.id = id;
+  }
+
+  mapType() {
+    if(this.type === 'hs'){
+      return "Học sinh";
+    } else if(this.type === 'nv') {
+      return "Nhân viên"
+    } else {
+      return "Khách Hàng";
+    }
   }
 }
 
@@ -53,5 +63,8 @@ class ListPerson {
 
   get(index) {
     return this.list[index];
+  }
+  getAll() {
+    return this.list;
   }
 }

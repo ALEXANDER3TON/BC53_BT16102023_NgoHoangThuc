@@ -24,6 +24,22 @@
       Thêm đối tượng
     </button>
 
+    <!-- Table -->
+    <div class="table-responsive foodTable">
+      <table class="table table-striped table-sm">
+        <thead>
+          <tr class="bg-warning text-white">
+            <th>Đối tượng</th>
+            <th>Tên</th>
+            <th>Địa chỉ</th>
+            <th>Email</th>
+            <th>Mã</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="tbodyPerson"></tbody>
+      </table>
+    </div>
     <!-- Modal -->
     <div
       class="modal fade"
@@ -49,6 +65,7 @@
                 <div class="form-group">
                   <label for="">Đối tượng</label>
                   <select class="form-control" name="type" id="type">
+                    <option value="">Chọn đối tượng</option>
                     <option value="hs">Học sinh</option>
                     <option value="nv">Nhân viên</option>
                     <option value="kh">Khách hàng</option>
@@ -81,7 +98,7 @@
                   <input type="text" name="id" id="id" class="form-control" />
                 </div>
               </div>
-              <div class="studentInfo">
+              <div class="studentInfo" style="display: none;">
                 <div class="form-group">
                   <label for="">Điểm toán</label>
                   <input
@@ -100,7 +117,7 @@
                   <input type="text" name="hoa" id="hoa" class="form-control" />
                 </div>
               </div>
-              <div class="employeeInfo">
+              <div class="employeeInfo" style="display: none;">
                 <div class="form-group">
                   <label for="">Số ngày làm</label>
                   <input
@@ -120,7 +137,7 @@
                   />
                 </div>
               </div>
-              <div class="customerInfo">
+              <div class="customerInfo" style="display: none;">
                 <div class="form-group">
                   <label for="">Tên công ty</label>
                   <input
