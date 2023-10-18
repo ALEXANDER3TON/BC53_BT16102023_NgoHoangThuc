@@ -45,14 +45,12 @@ class Customer extends Person {
 class ListPerson {
   constructor() {
     this.list = [];
-  };
+  }
 
   add(person) {
     this.list.push(person);
-  };
+  }
   getAll() {
     return this.list;
-  };
-  
-
-};
+  }
+}

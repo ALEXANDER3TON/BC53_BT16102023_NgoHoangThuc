@@ -51,7 +51,9 @@
       <div class="modal-dialog modal-lg">
         <div class="modal-content">
           <div class="modal-header">
-            <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+            <h1 class="modal-title fs-5" id="exampleModalLabel">
+              Nhập Thông Tin
+            </h1>
             <button
               type="button"
               class="btn-close"
@@ -70,10 +72,12 @@
                     <option value="Nhân viên">Nhân viên</option>
                     <option value="Khách hàng">Khách hàng</option>
                   </select>
+                  <span class="thongbao" id="tbdt"></span>
                 </div>
                 <div class="form-group">
                   <label for="">Họ tên</label>
                   <input type="text" name="ten" id="ten" class="form-control" />
+                  <span class="thongbao" id="tbten"></span>
                 </div>
                 <div class="form-group">
                   <label for="">Địa chỉ</label>
@@ -83,6 +87,7 @@
                     id="address"
                     class="form-control"
                   />
+                  <span class="thongbao" id="tbdc"></span>
                 </div>
                 <div class="form-group">
                   <label for="">Email</label>
@@ -92,13 +97,15 @@
                     id="email"
                     class="form-control"
                   />
+                  <span class="thongbao" id="tbemail"></span>
                 </div>
                 <div class="form-group">
                   <label for="">Mã</label>
                   <input type="text" name="id" id="id" class="form-control" />
+                  <span class="thongbao" id="tbma"></span>
                 </div>
               </div>
-              <div class="studentInfo" style="display: none;">
+              <div class="studentInfo" style="display: none">
                 <div class="form-group">
                   <label for="">Điểm toán</label>
                   <input
@@ -107,17 +114,20 @@
                     id="toan"
                     class="form-control"
                   />
+                  <span class="thongbao" id="tbToan"></span>
                 </div>
                 <div class="form-group">
                   <label for="">Điểm lý</label>
                   <input type="text" name="ly" id="ly" class="form-control" />
+                  <span class="thongbao" id="tbLy"></span>
                 </div>
                 <div class="form-group">
                   <label for="">Điểm hóa</label>
                   <input type="text" name="hoa" id="hoa" class="form-control" />
+                  <span class="thongbao" id="tbHoa"></span>
                 </div>
               </div>
-              <div class="employeeInfo" style="display: none;">
+              <div class="employeeInfo" style="display: none">
                 <div class="form-group">
                   <label for="">Số ngày làm</label>
                   <input
@@ -126,6 +136,7 @@
                     id="workDays"
                     class="form-control"
                   />
+                  <span class="thongbao" id="tbSNL"></span>
                 </div>
                 <div class="form-group">
                   <label for="">Lương theo ngày</label>
@@ -135,9 +146,10 @@
                     id="salaryDay"
                     class="form-control"
                   />
+                  <span class="thongbao" id="tbLNL"></span>
                 </div>
               </div>
-              <div class="customerInfo" style="display: none;">
+              <div class="customerInfo" style="display: none">
                 <div class="form-group">
                   <label for="">Tên công ty</label>
                   <input
@@ -146,6 +158,7 @@
                     id="companyName"
                     class="form-control"
                   />
+                  <span class="thongbao" id="tbTCT"></span>
                 </div>
                 <div class="form-group">
                   <label for="">Trị giá hóa đơn</label>
@@ -155,6 +168,7 @@
                     id="price"
                     class="form-control"
                   />
+                  <span class="thongbao" id="tbGTDH"></span>
                 </div>
                 <div class="form-group">
                   <label for="">Đánh giá</label>
@@ -164,6 +178,7 @@
                     id="feedback"
                     class="form-control"
                   />
+                  <span class="thongbao" id="tbDG"></span>
                 </div>
               </div>
             </div>
@@ -181,11 +196,16 @@
               class="btn btn-primary"
               id="add"
               onclick="add()"
-              data-bs-dismiss="modal"
+              
             >
               Thêm
             </button>
-            <button class="btn btn-success" type="button" onclick="updatePerson()" data-bs-dismiss="modal">
+            <button
+              class="btn btn-success"
+              type="button"
+              onclick="updatePerson()"
+              data-bs-dismiss="modal"
+            >
               Cập Nhật
             </button>
           </div>
@@ -193,7 +213,30 @@
       </div>
     </div>
 
-    
+    <!-- Modal Details -->
+    <div
+      class="modal fade"
+      id="infoModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="exampleModalLabel">Khách hàng</h1>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body" id="modalDetails"></div>
+        </div>
+      </div>
+    </div>
+    <script src="../js/utilities/validation.js"></script>
     <script src="../js/model/person.js"></script>
     <script type="module" src="../js/controller/main.js"></script>
 

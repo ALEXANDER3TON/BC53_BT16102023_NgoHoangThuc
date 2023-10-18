@@ -2,8 +2,8 @@ const getEle = (selector) => {
   return document.querySelector(selector);
 };
 let listPerson = new ListPerson();
-const LIST_PERSON = 'LIST_PERSON'
-let data = JSON.parse(localStorage.getItem(LIST_PERSON))
+const LIST_PERSON = "LIST_PERSON";
+let dataJSON = localStorage.getItem(LIST_PERSON);
 
 //Render chung
 const renderList = (list) => {
@@ -17,12 +17,11 @@ const renderList = (list) => {
         <td>${element.email}</td>
         <td>${element.id}</td>
         <td>
-          <button class="btn btn-success" onclick="edit(${
-            element.id
-          })" data-bs-toggle="modal"
+          <button class="btn btn-success" onclick="edit(${element.id})" data-bs-toggle="modal"
           data-bs-target="#fillInfoModal">Sửa</button>
-          <button class="btn btn-danger">Xóa</button>
-          <button class="btn btn-warning">Chi tiết</button>
+          <button class="btn btn-danger" onclick="del(${element.id})">Xóa</button>
+          <button class="btn btn-warning" onclick="details(${element.id})" data-bs-toggle="modal"
+          data-bs-target="#infoModal">Chi tiết</button>
         </td>
       </tr>
     `;
@@ -30,9 +29,9 @@ const renderList = (list) => {
   getEle("#tbodyPerson").innerHTML = htmlContent;
 };
 
-
-if(data !== null) {
-  renderList(data);
+if (dataJSON) {
+  listPerson.list = JSON.parse(dataJSON);
+  renderList(listPerson.list);
 }
 getEle("#type").addEventListener("change", function () {
   renderInput(this.value);
@@ -59,20 +58,20 @@ const renderInput = (value) => {
 };
 const resetForm = () => {
   getEle("#type").value = "";
-  getEle("#ten").value = '';
-  getEle("#address").value = '';
-  getEle("#email").value = '';
-  getEle("#id").value = '';
+  getEle("#ten").value = "";
+  getEle("#address").value = "";
+  getEle("#email").value = "";
+  getEle("#id").value = "";
   getEle("#id").disabled = false;
-  getEle("#toan").value = '';
-  getEle("#ly").value = '';
-  getEle("#hoa").value = '';
-  getEle("#workDays").value = '';
-  getEle("#salaryDay").value = '';
-  getEle("#companyName").value = '';
-  getEle("#price").value = '';
-  getEle("#feedback").value = '';
-}
+  getEle("#toan").value = "";
+  getEle("#ly").value = "";
+  getEle("#hoa").value = "";
+  getEle("#workDays").value = "";
+  getEle("#salaryDay").value = "";
+  getEle("#companyName").value = "";
+  getEle("#price").value = "";
+  getEle("#feedback").value = "";
+};
 const takeInfo = () => {
   const element = document.querySelectorAll(
     "#personForm input, #personForm select"
@@ -88,7 +87,7 @@ const takeInfo = () => {
     const student = new Student(type, ten, address, email, id, toan, ly, hoa);
     listPerson.add(student);
     return student;
-  } else if (type === "Nhân viên") {
+  } else if (doiTuong.type === "Nhân viên") {
     const { type, ten, address, email, id, workDays, salaryDay } = doiTuong;
     const employee = new Employee(
       type,
@@ -101,7 +100,7 @@ const takeInfo = () => {
     );
     listPerson.add(employee);
     return employee;
-  } else if (type === "Khách hàng") {
+  } else if (doiTuong.type === "Khách hàng") {
     const { type, ten, address, email, id, companyName, price, feedback } =
       doiTuong;
     const customer = new Customer(
@@ -124,27 +123,76 @@ const takeInfo = () => {
   }
 };
 
+let valid = false;
+const checkValidation = (person) => {
+  // Kiểm tra đối tượng
+  valid &= checkOption(person.type, "tbdt", "Vui lòng chọn đối tượng");
+
+  // Kiểm tra tên
+  valid &= checkEmpty(person.ten, "tbten", "Vui lòng nhập tên");
+  valid &= checkString(person.ten, "tbten", "Vui lòng chỉ nhập ký tự chũ");
+
+  // Kiểm tra địa chỉ
+  valid &= checkEmpty(person.address, "tbdc", "Vui lòng địa chỉ");
+
+  // Kiểm tra email
+  valid &= checkEmpty(person.email, "tbemail", "Vui lòng nhập Email");
+  valid &= checkEmail(person.email, "tbemail", "Vui lòng nhập Email hợp lệ");
+
+  // Kiểm tra mã
+  valid &= checkEmpty(person.id, "tbma", "Vui lòng nhập mã");
+  valid &= checkLimit(person.id, 4, 4, "tbma", "Mã gồm 4 ký tự số")
+  valid &= checkNumber(person.id, "tbma", "Mã gồm 4 ký tự số")
+  // Kiểm tra điểm học sinh
+  if (person.type === "Học sinh") {
+    valid &= checkEmpty(person.toan, "tbToan", "Vui lòng nhập điểm Toán");
+    valid &= checkNumber(person.toan, "tbToan", "Điểm Toán phải là số");
+    valid &= checkEmpty(person.ly, "tbLy", "Vui lòng nhập điểm Lý");
+    valid &= checkNumber(person.ly, "tbLy", "Điểm Lý phải là số");
+    valid &= checkEmpty(person.hoa, "tbHoa", "Vui lòng nhập điểm Hóa");
+    valid &= checkNumber(person.hoa, "tbHoa", "Điểm Hóa phải là số");
+  }
+
+  // Kiểm tra số ngày làm và lương nhân viên
+  if (person.type === "Nhân viên") {
+    valid &= checkEmpty(person.workDays, "tbSNL", "Vui lòng nhập số ngày làm");
+    valid &= checkNumber(person.workDays, "tbSNL", "Số ngày làm phải là số");
+    valid &= checkLimit(
+      person.workDays,
+      20,
+      26,
+      "tbSNL",
+      "Số ngày làm quy định từ 20-26 ngày"
+    );
+  }
+};
 window.add = () => {
   const person = takeInfo();
-  localStorage.setItem(LIST_PERSON, JSON.stringify(listPerson.getAll()))
-  renderList(data);
-  resetForm()
+  checkValidation(person);
+
+  if ((valid = true)) {
+    localStorage.setItem(LIST_PERSON, JSON.stringify(listPerson.list));
+    const data = JSON.parse(localStorage.getItem(LIST_PERSON));
+    renderList(data);
+    resetForm();
+  }
 };
 
 const findPerson = (list, id) => {
   let item;
   list.forEach((element) => {
-    if(Number(element.id) === Number(id)) {
+    if (Number(element.id) === Number(id)) {
       item = element;
     }
   });
   return item;
-}
+};
 
 window.edit = (id) => {
-  const data = JSON.parse(localStorage.getItem(LIST_PERSON))
-  const person = findPerson(data, id)
-  renderInput(person.type)
+  const data = JSON.parse(localStorage.getItem(LIST_PERSON));
+  const person = findPerson(data, id);
+  console.log(person);
+  renderInput(person.type);
   getEle("#type").value = person.type;
   getEle("#ten").value = person.ten;
   getEle("#address").value = person.address;
@@ -161,18 +209,112 @@ window.edit = (id) => {
   getEle("#feedback").value = person.feedback;
 };
 
-
-const update = (person) => {
-  const data = JSON.parse(localStorage.getItem(LIST_PERSON));
+window.updatePerson = () => {
+  let data = JSON.parse(localStorage.getItem(LIST_PERSON));
+  const person = takeInfo();
   const index = data.findIndex((element) => {
-    return element.id == person.id;
-  })
+    return Number(element.id) === Number(person.id);
+  });
   data[index] = person;
   localStorage.setItem(LIST_PERSON, JSON.stringify(data));
-}
-window.updatePerson = () => {
-  const person = takeInfo();
-  update(person);
-  renderList(listPerson.getAll());
-  resetForm()
-}
+  renderList(data);
+  resetForm();
+};
+
+window.del = (id) => {
+  let data = JSON.parse(localStorage.getItem(LIST_PERSON));
+  const index = data.findIndex((element) => {
+    return element.id === id;
+  });
+  data.splice(index, 1);
+  localStorage.setItem(LIST_PERSON, JSON.stringify(data));
+  renderList(data);
+};
+
+const renderDetails = (person) => {
+  let htmlContent = "";
+  switch (person.type) {
+    case "Học sinh":
+      htmlContent = `
+        <div class="table-responsive foodTable">
+          <table class="table table-striped table-sm">
+            <thead>
+              <tr class="bg-warning text-white">
+                <th>Điểm Toán</th>
+                <th>Điểm Lý</th>
+                <th>Điểm Hóa</th>
+                <th>Điểm Trung Bình</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>${person.toan}</td>
+                <td>${person.ly}</td>
+                <td>${person.hoa}</td>
+                <td>${
+                  (Number(person.toan) +
+                    Number(person.ly) +
+                    Number(person.hoa)) /
+                  3
+                }</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      `;
+      getEle("#modalDetails").innerHTML = htmlContent;
+      break;
+    case "Nhân viên":
+      htmlContent = `
+          <div class="table-responsive foodTable">
+            <table class="table table-striped table-sm">
+              <thead>
+                <tr class="bg-warning text-white">
+                  <th>Số ngày làm</th>
+                  <th>Lương/Ngày</th>
+                  <th>Tổng Lương</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>${person.workDays}</td>
+                  <td>${person.salaryDay}</td>
+                  <td>${Number(person.workDays) * Number(person.salaryDay)}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        `;
+      getEle("#modalDetails").innerHTML = htmlContent;
+      break;
+    case "Khách hàng":
+      htmlContent = `
+            <div class="table-responsive foodTable">
+              <table class="table table-striped table-sm">
+                <thead>
+                  <tr class="bg-warning text-white">
+                    <th>Tên công ty</th>
+                    <th>Giá trị đơn hàng</th>
+                    <th>Đánh giá</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>${person.companyName}</td>
+                    <td>${person.price}</td>
+                    <td>${person.feedback}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          `;
+      getEle("#modalDetails").innerHTML = htmlContent;
+      break;
+  }
+};
+
+window.details = (id) => {
+  const data = JSON.parse(localStorage.getItem(LIST_PERSON));
+  const person = findPerson(data, id);
+  renderDetails(person);
+};
