@@ -5,10 +5,7 @@ const getEle = (selector) => {
 const listPerson = new ListPerson();
 const LIST_PERSON = "LIST_PERSON";
 const data = JSON.parse(localStorage.getItem(LIST_PERSON));
-if(data !== null){
-  listPerson.list = data;
- 
-}
+
 //Render chung
 const renderList = (list) => {
   let htmlContent = "";
@@ -33,7 +30,9 @@ const renderList = (list) => {
   getEle("#tbodyPerson").innerHTML = htmlContent;
 };
 
-renderList(listPerson.list)
+if(data !== null) {
+  renderList(data)
+}
 getEle("#type").addEventListener("change", function () {
   renderInput(this.value);
 });
@@ -127,8 +126,8 @@ const checkValidation = (person) => {
 
   // Kiểm tra tên
   valid &=
-  checkEmpty(person.ten, "tbten", "Vui lòng nhập tên") &&
-  checkString(person.ten, "tbten", "Vui lòng chỉ nhập ký tự chữ");
+    checkEmpty(person.ten, "tbten", "Vui lòng nhập tên") &&
+    checkString(person.ten, "tbten", "Vui lòng chỉ nhập ký tự chữ");
 
   // Kiểm tra địa chỉ
   valid &= checkEmpty(person.address, "tbdc", "Vui lòng địa chỉ");
@@ -138,62 +137,129 @@ const checkValidation = (person) => {
   valid &= checkEmail(person.email, "tbemail", "Vui lòng nhập Email hợp lệ");
 
   // Kiểm tra mã
-  valid &= 
-  checkEmpty(person.id, "tbma", "Vui lòng nhập mã") &&
-  checkNumber(person.id, "tbma", "Mã gồm 4 ký tự số") &&
-  checkID(person.id, 4, 4, "tbma", "Mã gồm 4 ký tự số") &&
-  checkDuplicate(person.id, listPerson.list, "tbma", "Mã đã tồn tại");
+  valid &=
+    checkEmpty(person.id, "tbma", "Vui lòng nhập mã") &&
+    checkNumber(person.id, "tbma", "Mã gồm 4 ký tự số") &&
+    checkID(person.id, 4, 4, "tbma", "Mã gồm 4 ký tự số") &&
+    checkDuplicate(person.id, listPerson.list, "tbma", "Mã đã tồn tại");
   // Kiểm tra điểm học sinh
   if (person.type === "Học sinh") {
-    valid &= 
-    checkEmpty(person.toan, "tbToan", "Vui lòng nhập điểm Toán") &&
-    checkNumber(person.toan, "tbToan", "Điểm Toán phải là số");
     valid &=
-    checkEmpty(person.ly, "tbLy", "Vui lòng nhập điểm Lý") &&
-    checkNumber(person.ly, "tbLy", "Điểm Lý phải là số");
+      checkEmpty(person.toan, "tbToan", "Vui lòng nhập điểm Toán") &&
+      checkNumber(person.toan, "tbToan", "Điểm Toán phải là số");
     valid &=
-    checkEmpty(person.hoa, "tbHoa", "Vui lòng nhập điểm Hóa") &&
-    checkNumber(person.hoa, "tbHoa", "Điểm Hóa phải là số");
+      checkEmpty(person.ly, "tbLy", "Vui lòng nhập điểm Lý") &&
+      checkNumber(person.ly, "tbLy", "Điểm Lý phải là số");
+    valid &=
+      checkEmpty(person.hoa, "tbHoa", "Vui lòng nhập điểm Hóa") &&
+      checkNumber(person.hoa, "tbHoa", "Điểm Hóa phải là số");
   }
 
   // Kiểm tra số ngày làm và lương nhân viên
   if (person.type === "Nhân viên") {
-    valid &= 
-    checkEmpty(person.workDays, "tbSNL", "Vui lòng nhập số ngày làm")&&
-    checkNumber(person.workDays, "tbSNL", "Số ngày làm phải là số") &&
-    checkLimit(
-      person.workDays,
-      20,
-      26,
-      "tbSNL",
-      "Số ngày làm quy định từ 20-26 ngày"
-    );
-    valid &= 
-    checkEmpty(person.salaryDay, "tbLNL", "Vui lòng nhập lương") &&
-    checkNumber(person.salaryDay, "tbLNL", "Lương phải là số") &&
-    checkLimit(person.salaryDay, 200000, 400000, "tbLNL", "Vui lòng nhập lương theo quy định");
+    valid &=
+      checkEmpty(person.workDays, "tbSNL", "Vui lòng nhập số ngày làm") &&
+      checkNumber(person.workDays, "tbSNL", "Số ngày làm phải là số") &&
+      checkLimit(
+        person.workDays,
+        20,
+        26,
+        "tbSNL",
+        "Số ngày làm quy định từ 20-26 ngày"
+      );
+    valid &=
+      checkEmpty(person.salaryDay, "tbLNL", "Vui lòng nhập lương") &&
+      checkNumber(person.salaryDay, "tbLNL", "Lương phải là số") &&
+      checkLimit(
+        person.salaryDay,
+        200000,
+        400000,
+        "tbLNL",
+        "Vui lòng nhập lương theo quy định"
+      );
   }
 
   // Kiểm tra thông tin khách hàng
   if (person.type === "Khách hàng") {
-    valid &= 
-    checkEmpty(person.companyName, "tbTCT", "Vui lòng nhập tên công ty");
-    valid &= 
-    checkEmpty(person.price, "tbGTDH", "Vui lòng nhập giá trị đơn hàng") &&
-    checkNumber(person.price, "tbGTDH", "Giá trị đơn hàng phải là số");
+    valid &= checkEmpty(
+      person.companyName,
+      "tbTCT",
+      "Vui lòng nhập tên công ty"
+    );
+    valid &=
+      checkEmpty(person.price, "tbGTDH", "Vui lòng nhập giá trị đơn hàng") &&
+      checkNumber(person.price, "tbGTDH", "Giá trị đơn hàng phải là số");
   }
   return valid;
 };
-window.add = () => {
-  const person = takeInfo();
-  valid = checkValidation(person);
+
+
+const checkValidationUpdate = (person) => {
+  // Kiểm tra đối tượng
+  valid = checkOption(person.type, "tbdt", "Vui lòng chọn đối tượng");
+
+  // Kiểm tra tên
+  valid &=
+    checkEmpty(person.ten, "tbten", "Vui lòng nhập tên") &&
+    checkString(person.ten, "tbten", "Vui lòng chỉ nhập ký tự chữ");
+
+  // Kiểm tra địa chỉ
+  valid &= checkEmpty(person.address, "tbdc", "Vui lòng địa chỉ");
+
+  // Kiểm tra email
+  valid &= checkEmpty(person.email, "tbemail", "Vui lòng nhập Email");
+  valid &= checkEmail(person.email, "tbemail", "Vui lòng nhập Email hợp lệ");
+
   
-  if ((valid)) {
-    listPerson.add(person);
-    localStorage.setItem(LIST_PERSON, JSON.stringify(listPerson.list));
-    renderList(listPerson.list);
-    resetForm();
+  // Kiểm tra điểm học sinh
+  if (person.type === "Học sinh") {
+    valid &=
+      checkEmpty(person.toan, "tbToan", "Vui lòng nhập điểm Toán") &&
+      checkNumber(person.toan, "tbToan", "Điểm Toán phải là số");
+    valid &=
+      checkEmpty(person.ly, "tbLy", "Vui lòng nhập điểm Lý") &&
+      checkNumber(person.ly, "tbLy", "Điểm Lý phải là số");
+    valid &=
+      checkEmpty(person.hoa, "tbHoa", "Vui lòng nhập điểm Hóa") &&
+      checkNumber(person.hoa, "tbHoa", "Điểm Hóa phải là số");
   }
+
+  // Kiểm tra số ngày làm và lương nhân viên
+  if (person.type === "Nhân viên") {
+    valid &=
+      checkEmpty(person.workDays, "tbSNL", "Vui lòng nhập số ngày làm") &&
+      checkNumber(person.workDays, "tbSNL", "Số ngày làm phải là số") &&
+      checkLimit(
+        person.workDays,
+        20,
+        26,
+        "tbSNL",
+        "Số ngày làm quy định từ 20-26 ngày"
+      );
+    valid &=
+      checkEmpty(person.salaryDay, "tbLNL", "Vui lòng nhập lương") &&
+      checkNumber(person.salaryDay, "tbLNL", "Lương phải là số") &&
+      checkLimit(
+        person.salaryDay,
+        200000,
+        400000,
+        "tbLNL",
+        "Vui lòng nhập lương theo quy định"
+      );
+  }
+
+  // Kiểm tra thông tin khách hàng
+  if (person.type === "Khách hàng") {
+    valid &= checkEmpty(
+      person.companyName,
+      "tbTCT",
+      "Vui lòng nhập tên công ty"
+    );
+    valid &=
+      checkEmpty(person.price, "tbGTDH", "Vui lòng nhập giá trị đơn hàng") &&
+      checkNumber(person.price, "tbGTDH", "Giá trị đơn hàng phải là số");
+  }
+  return valid;
 };
 
 const findPerson = (list, id) => {
@@ -205,6 +271,23 @@ const findPerson = (list, id) => {
   });
   return item;
 };
+window.add = () => {
+  const data = JSON.parse(localStorage.getItem(LIST_PERSON));
+  const person = takeInfo();
+  if (data !== null) {
+    listPerson.list = [...data];
+  }
+  valid = checkValidation(person);
+
+  if (valid) {
+    listPerson.add(person);
+    localStorage.setItem(LIST_PERSON, JSON.stringify(listPerson.list));
+    renderList(listPerson.list);
+    resetForm();
+  }
+};
+
+
 
 window.edit = (id) => {
   const data = JSON.parse(localStorage.getItem(LIST_PERSON));
@@ -229,13 +312,19 @@ window.edit = (id) => {
 
 window.updatePerson = () => {
   const person = takeInfo();
-  const index = listPerson.list.findIndex((element) => {
-    return element.id === person.id;
-  });
-  listPerson.list[index] = person
-  localStorage.setItem(LIST_PERSON, JSON.stringify(listPerson.list));
-  renderList(listPerson.list);
-  resetForm();
+  valid = checkValidationUpdate(person)
+  if(valid) {
+    const index = listPerson.list.findIndex((element) => {
+      return element.id === person.id;
+    });
+  
+  if(index !== -1){
+    listPerson.list[index] = person;
+    localStorage.setItem(LIST_PERSON, JSON.stringify(listPerson.list));
+    renderList(listPerson.list);
+    resetForm();
+  }
+  }
 };
 
 window.del = (id) => {
