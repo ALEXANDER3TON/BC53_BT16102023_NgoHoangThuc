@@ -29,7 +29,7 @@ function checkEmpty(value, idErr, message) {
 
   function checkDuplicate(value, ds, idErr, message) {
     var index = ds.findIndex(function (nv) {
-      return nv.account == value;
+      return nv.id === value;
     });
   
     if (index != -1) {
@@ -70,7 +70,7 @@ function checkEmpty(value, idErr, message) {
       return false;
     };
   };
-  function checkAcount(value, min, max, idErr, message) {
+  function checkID(value, min, max, idErr, message) {
     var length = value.length;
     if (length >= min && length <= max) {
       document.getElementById(idErr).innerHTML = "";
@@ -98,7 +98,7 @@ function checkEmpty(value, idErr, message) {
   };
   
   function checkEmptyNum(value, idErr, message){
-    if(value === ''){
+    if(value == 0){
       document.getElementById(idErr).innerHTML = message;
       document.getElementById(idErr).style.display = "block";
       return false;
@@ -111,7 +111,7 @@ function checkEmpty(value, idErr, message) {
 
   function checkOption(value, idErr, message){
   
-    if(value === "Chọn đối tượng"){
+    if(value === ""){
       document.getElementById(idErr).innerHTML = message;
       document.getElementById(idErr).style.display = "block";
       return false;

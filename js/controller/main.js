@@ -1,10 +1,13 @@
 const getEle = (selector) => {
   return document.querySelector(selector);
 };
+
 let listPerson = new ListPerson();
 const LIST_PERSON = "LIST_PERSON";
-let dataJSON = localStorage.getItem(LIST_PERSON);
-
+const data = JSON.parse(localStorage.getItem(LIST_PERSON));
+if(data !== null){
+  listPerson.list = data;
+}
 //Render chung
 const renderList = (list) => {
   let htmlContent = "";
@@ -29,10 +32,7 @@ const renderList = (list) => {
   getEle("#tbodyPerson").innerHTML = htmlContent;
 };
 
-if (dataJSON) {
-  listPerson.list = JSON.parse(dataJSON);
-  renderList(listPerson.list);
-}
+renderList(data)
 getEle("#type").addEventListener("change", function () {
   renderInput(this.value);
 });
@@ -85,7 +85,6 @@ const takeInfo = () => {
   if (doiTuong.type === "Học sinh") {
     const { type, ten, address, email, id, toan, ly, hoa } = doiTuong;
     const student = new Student(type, ten, address, email, id, toan, ly, hoa);
-    listPerson.add(student);
     return student;
   } else if (doiTuong.type === "Nhân viên") {
     const { type, ten, address, email, id, workDays, salaryDay } = doiTuong;
@@ -98,7 +97,6 @@ const takeInfo = () => {
       workDays,
       salaryDay
     );
-    listPerson.add(employee);
     return employee;
   } else if (doiTuong.type === "Khách hàng") {
     const { type, ten, address, email, id, companyName, price, feedback } =
@@ -113,24 +111,23 @@ const takeInfo = () => {
       price,
       feedback
     );
-    listPerson.add(customer);
     return customer;
   } else {
     const { type, ten, address, email, id } = doiTuong;
     const person = new Person(type, ten, address, email, id);
-    listPerson.add(person);
     return person;
   }
 };
+let valid;
 
-let valid = false;
 const checkValidation = (person) => {
   // Kiểm tra đối tượng
-  valid &= checkOption(person.type, "tbdt", "Vui lòng chọn đối tượng");
+  valid = checkOption(person.type, "tbdt", "Vui lòng chọn đối tượng");
 
   // Kiểm tra tên
-  valid &= checkEmpty(person.ten, "tbten", "Vui lòng nhập tên");
-  valid &= checkString(person.ten, "tbten", "Vui lòng chỉ nhập ký tự chũ");
+  valid &=
+  checkEmpty(person.ten, "tbten", "Vui lòng nhập tên") &&
+  checkString(person.ten, "tbten", "Vui lòng chỉ nhập ký tự chữ");
 
   // Kiểm tra địa chỉ
   valid &= checkEmpty(person.address, "tbdc", "Vui lòng địa chỉ");
@@ -140,40 +137,61 @@ const checkValidation = (person) => {
   valid &= checkEmail(person.email, "tbemail", "Vui lòng nhập Email hợp lệ");
 
   // Kiểm tra mã
-  valid &= checkEmpty(person.id, "tbma", "Vui lòng nhập mã");
-  valid &= checkLimit(person.id, 4, 4, "tbma", "Mã gồm 4 ký tự số")
-  valid &= checkNumber(person.id, "tbma", "Mã gồm 4 ký tự số")
+  valid &= 
+  checkEmpty(person.id, "tbma", "Vui lòng nhập mã") &&
+  checkNumber(person.id, "tbma", "Mã gồm 4 ký tự số") &&
+  checkID(person.id, 4, 4, "tbma", "Mã gồm 4 ký tự số") &&
+  checkDuplicate(person.id, listPerson.list, "tbma", "Mã đã tồn tại");
   // Kiểm tra điểm học sinh
   if (person.type === "Học sinh") {
-    valid &= checkEmpty(person.toan, "tbToan", "Vui lòng nhập điểm Toán");
-    valid &= checkNumber(person.toan, "tbToan", "Điểm Toán phải là số");
-    valid &= checkEmpty(person.ly, "tbLy", "Vui lòng nhập điểm Lý");
-    valid &= checkNumber(person.ly, "tbLy", "Điểm Lý phải là số");
-    valid &= checkEmpty(person.hoa, "tbHoa", "Vui lòng nhập điểm Hóa");
-    valid &= checkNumber(person.hoa, "tbHoa", "Điểm Hóa phải là số");
+    valid &= 
+    checkEmpty(person.toan, "tbToan", "Vui lòng nhập điểm Toán") &&
+    checkNumber(person.toan, "tbToan", "Điểm Toán phải là số");
+    valid &=
+    checkEmpty(person.ly, "tbLy", "Vui lòng nhập điểm Lý") &&
+    checkNumber(person.ly, "tbLy", "Điểm Lý phải là số");
+    valid &=
+    checkEmpty(person.hoa, "tbHoa", "Vui lòng nhập điểm Hóa") &&
+    checkNumber(person.hoa, "tbHoa", "Điểm Hóa phải là số");
   }
 
   // Kiểm tra số ngày làm và lương nhân viên
   if (person.type === "Nhân viên") {
-    valid &= checkEmpty(person.workDays, "tbSNL", "Vui lòng nhập số ngày làm");
-    valid &= checkNumber(person.workDays, "tbSNL", "Số ngày làm phải là số");
-    valid &= checkLimit(
+    valid &= 
+    checkEmpty(person.workDays, "tbSNL", "Vui lòng nhập số ngày làm")&&
+    checkNumber(person.workDays, "tbSNL", "Số ngày làm phải là số") &&
+    checkLimit(
       person.workDays,
       20,
       26,
       "tbSNL",
       "Số ngày làm quy định từ 20-26 ngày"
     );
+    valid &= 
+    checkEmpty(person.salaryDay, "tbLNL", "Vui lòng nhập lương") &&
+    checkNumber(person.salaryDay, "tbLNL", "Lương phải là số") &&
+    checkLimit(person.salaryDay, 200000, 400000, "tbLNL", "Vui lòng nhập lương theo quy định");
   }
+
+  // Kiểm tra thông tin khách hàng
+  if (person.type === "Khách hàng") {
+    valid &= 
+    checkEmpty(person.companyName, "tbTCT", "Vui lòng nhập tên công ty");
+    valid &= 
+    checkEmpty(person.price, "tbGTDH", "Vui lòng nhập giá trị đơn hàng") &&
+    checkNumber(person.price, "tbGTDH", "Giá trị đơn hàng phải là số");
+  }
+  return valid;
 };
 window.add = () => {
   const person = takeInfo();
-  checkValidation(person);
-
-  if ((valid = true)) {
+  valid = checkValidation(person);
+  
+  if ((valid)) {
+    listPerson.add(person);
+    console.log(listPerson.list)
     localStorage.setItem(LIST_PERSON, JSON.stringify(listPerson.list));
-    const data = JSON.parse(localStorage.getItem(LIST_PERSON));
-    renderList(data);
+    renderList(listPerson.list);
     resetForm();
   }
 };
@@ -210,25 +228,23 @@ window.edit = (id) => {
 };
 
 window.updatePerson = () => {
-  let data = JSON.parse(localStorage.getItem(LIST_PERSON));
   const person = takeInfo();
-  const index = data.findIndex((element) => {
-    return Number(element.id) === Number(person.id);
-  });
-  data[index] = person;
-  localStorage.setItem(LIST_PERSON, JSON.stringify(data));
-  renderList(data);
+  const index = listPerson.list.findIndex((element) => {
+    return element.id = person.id
+  })
+  listPerson.list[index] = person
+  localStorage.setItem(LIST_PERSON, JSON.stringify(listPerson.list));
+  renderList(listPerson.list);
   resetForm();
 };
 
 window.del = (id) => {
-  let data = JSON.parse(localStorage.getItem(LIST_PERSON));
-  const index = data.findIndex((element) => {
+  const index = listPerson.list.findIndex((element) => {
     return element.id === id;
   });
-  data.splice(index, 1);
-  localStorage.setItem(LIST_PERSON, JSON.stringify(data));
-  renderList(data);
+  listPerson.list.splice(index, 1);
+  localStorage.setItem(LIST_PERSON, JSON.stringify(listPerson.list));
+  renderList(listPerson.list);
 };
 
 const renderDetails = (person) => {
