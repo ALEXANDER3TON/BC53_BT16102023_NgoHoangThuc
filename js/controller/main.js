@@ -271,6 +271,11 @@ const findPerson = (list, id) => {
   });
   return item;
 };
+
+getEle("#addPerson").addEventListener('click', () => {
+  getEle("#update").style.display="none";
+  getEle("#add").style.display="block"
+})
 window.add = () => {
   const data = JSON.parse(localStorage.getItem(LIST_PERSON));
   const person = takeInfo();
@@ -308,6 +313,9 @@ window.edit = (id) => {
   getEle("#companyName").value = person.companyName;
   getEle("#price").value = person.price;
   getEle("#feedback").value = person.feedback;
+
+  getEle("#add").style.display="none"
+  getEle("#update").style.display="block"
 };
 
 window.updatePerson = () => {
