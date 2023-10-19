@@ -2,11 +2,12 @@ const getEle = (selector) => {
   return document.querySelector(selector);
 };
 
-let listPerson = new ListPerson();
+const listPerson = new ListPerson();
 const LIST_PERSON = "LIST_PERSON";
 const data = JSON.parse(localStorage.getItem(LIST_PERSON));
 if(data !== null){
   listPerson.list = data;
+ 
 }
 //Render chung
 const renderList = (list) => {
@@ -32,7 +33,7 @@ const renderList = (list) => {
   getEle("#tbodyPerson").innerHTML = htmlContent;
 };
 
-renderList(data)
+renderList(listPerson.list)
 getEle("#type").addEventListener("change", function () {
   renderInput(this.value);
 });
@@ -189,7 +190,6 @@ window.add = () => {
   
   if ((valid)) {
     listPerson.add(person);
-    console.log(listPerson.list)
     localStorage.setItem(LIST_PERSON, JSON.stringify(listPerson.list));
     renderList(listPerson.list);
     resetForm();
@@ -230,8 +230,8 @@ window.edit = (id) => {
 window.updatePerson = () => {
   const person = takeInfo();
   const index = listPerson.list.findIndex((element) => {
-    return element.id = person.id
-  })
+    return element.id === person.id;
+  });
   listPerson.list[index] = person
   localStorage.setItem(LIST_PERSON, JSON.stringify(listPerson.list));
   renderList(listPerson.list);
