@@ -280,7 +280,7 @@ window.add = () => {
   const data = JSON.parse(localStorage.getItem(LIST_PERSON));
   const person = takeInfo();
   if (data !== null) {
-    listPerson.list = [...data];
+    listPerson.list = data;
   }
   valid = checkValidation(person);
 
