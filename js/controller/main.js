@@ -289,6 +289,7 @@ window.add = () => {
     localStorage.setItem(LIST_PERSON, JSON.stringify(listPerson.list));
     renderList(listPerson.list);
     resetForm();
+    
   }
 };
 
@@ -319,8 +320,12 @@ window.edit = (id) => {
 };
 
 window.updatePerson = () => {
+  const data = JSON.parse(localStorage.getItem(LIST_PERSON));
+  if (data !== null) {
+    listPerson.list = data;
+  }
   const person = takeInfo();
-  valid = checkValidationUpdate(person)
+  valid = checkValidation(person);
   if(valid) {
     const index = listPerson.list.findIndex((element) => {
       return element.id === person.id;
@@ -336,6 +341,10 @@ window.updatePerson = () => {
 };
 
 window.del = (id) => {
+  const data = JSON.parse(localStorage.getItem(LIST_PERSON));
+  if (data !== null) {
+    listPerson.list = data;
+  }
   const index = listPerson.list.findIndex((element) => {
     return element.id === id;
   });
